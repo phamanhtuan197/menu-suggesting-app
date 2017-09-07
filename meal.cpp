@@ -1,71 +1,46 @@
 #pragma once
 #include "support.cpp"
 #include "ingredient.cpp"
-
+#include <set>
+#include <map>
 class meal{
-    bool *ingredient_matrix;
-    int length;
 public:
-    int init(int length)
+    set<int> ingredients;
+    int add_ingredient(ingredients_list insList)
     {
-        if (length < 1) return err(INVALID_VALUE, "length cannot be less than 1");
-        ingredient_matrix = new bool[length];
-        for (int i = 0; i < length; ++i)
-            ingredient_matrix[i] = false;
-        this -> length = length;
+        for (map<int, string> :: iterator it = insList.insis.begin(); it != insList.insis.end(); ++it)
+        {
+            ingredients.insert(it -> first);
+            //cout << "/!\\ " << it -> first << endl;
+        }
     }
-    int get_length(){ return length;}
-    int set_bit(int index, int value=1)
+    bool exists(int ingredient_index)
     {
-        if (index >= this->length)
-            return err(INVALID_VALUE, "index cannot be equal or greater than length");
-        ingredient_matrix[index] = value;
+        if (ingredients.find(ingredient_index) != ingredients.end())
+            return true;
+        else return false;
     }
-    int get_bit(int index)
+    int erase(int ingredient_index)
     {
-        if (index >= this->length)
-            return err(INVALID_VALUE, "index cannot be equal or greater than length");
-        return ingredient_matrix[index];
+        if (ingredients.find(ingredient_index) != ingredients.end())
+        {
+            ingredients.erase(ingredients.find(ingredient_index));
+            return OK;
+        }
+        else 
+            return NOT_EXISTS;
     }
-    string get_bit_sequence()
+    int print()
     {
-        string r = "";
-        for (int i = 0; i < length; ++i)
-            r.push_back((char) (ingredient_matrix[i] + '0'));
-        return r;
+        for (set<int> :: iterator it = ingredients.begin(); it != ingredients.end(); ++it)
+            cout << (*it) << ", ";
+        cout << endl;
     }
 };
 
-meal make_meal(ingredients_list insList, int max_number_ingredient = -1)
+meal make_meal(ingredients_list insList)
 {
-    if (max_number_ingredient < 1) err(INVALID_VALUE, "max number of ingredient cannot be less than 1");
-    meal r;
-    r.init (max_number_ingredient);
-    for (map<int, string> :: iterator it = insList.insis.begin(); it != insList.insis.end(); ++it)
-    {
-        //cerr << "adding ingredient name " << it -> second << " index " << it -> first << endl;
-        r.set_bit(it -> first);
-    }
-    return r;
-}
-
-meal operator+(meal m, ingredients_list insList)
-{
-    for (map<int, string> :: iterator it = insList.insis.begin(); it != insList.insis.end(); ++it)
-    {
-        //cerr << "adding ingredient name " << it -> second << " index " << it -> first << endl;
-        m.set_bit(it -> first);
-    }
+    meal m;
+    m.add_ingredient(insList);
     return m;
-}
-meal copy(meal source)
-{
-    meal r;
-    int len = source.get_length();
-    r. init(len);
-    for (int i = 0; i < len; ++i)
-    {
-        r.set_bit(i, source.get_bit(i));
-    }
-    return r;
 }

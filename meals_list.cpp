@@ -5,11 +5,14 @@
 #include <vector>
 struct classcomp{
     bool operator()(meal a, meal b) { //meal a and meal b have to have the same length
-        int len = a.get_length();
-        for (int i = 0; i < len; ++i)
+        if (a.ingredients.size() < b.ingredients.size()) return true;
+        else if (a.ingredients.size() > b.ingredients.size()) return false;
+        set<int> :: iterator ita = a.ingredients.begin();
+        set<int> :: iterator itb = b.ingredients.begin();
+        for (; ita != a.ingredients.end() && itb != b.ingredients.end(); ++ita, ++itb)
         {
-            if (a.get_bit(i) < b.get_bit(i)) return true;
-            else if (a.get_bit(i) > b.get_bit(i)) return false;
+            if (*ita < *itb) return true;
+            return false;
         }
         return false;
         //return true means a stand before b
@@ -30,7 +33,7 @@ public:
     int add_meal(meal m, string name)
     {
             //cout << "adding meal " << m.get_bit_sequence() << " name " << name << endl;
-            if (insms.find(m) != insms.end()) return err(ALREADY_EXISTS, "meal  data has already exists " + m.get_bit_sequence() + " " + insms.find(m) -> second);
+            if (insms.find(m) != insms.end()) return err(ALREADY_EXISTS, "meal  data has already exists ");
             if (inssm.find(name) != inssm.end()) return err(ALREADY_EXISTS, "meal index has alredy exists");
             insms[m] = name;
             inssm[name] = m;
@@ -41,7 +44,7 @@ public:
     {
         if (inssm.find(name) != inssm.end()) return inssm[name];
         err(NOT_EXISTS, "meal name is not exists");
-        return make_meal(make_ingredient("deadly", 9), 10);
+        return make_meal(make_ingredient("deadly", 9));
     }
     string getName(meal m)
     {
@@ -52,37 +55,22 @@ public:
     void print()
     {
         cout << "meals_list print out: size() = " << size() << endl;
-        for (map<string, meal> :: iterator it = inssm.begin(); it != inssm.end(); ++it)
-            cout << it -> first << ": " << ((meal)(it -> second)).get_bit_sequence() << endl;
+        for (map<string, meal> :: iterator it = inssm.begin(); it != inssm.end(); ++it){
+            cout << it -> first;
+            cout << ": ";
+            ((meal) (it -> second)).print();
+            //cout << ((meal)(it -> second)).print() << endl;
+            //cout will calculate the fomula first and then print out later, so, ingredients will be printed out first of all, and the ((meal)(it -> second)).print()  is the return of the function print() which means nothing
+        }
         cout << "And reverse: " << endl;
-        for (map<meal, string, classcomp> :: iterator it = insms.begin(); it != insms.end(); ++it)
-            cout << it -> second << ": " << ((meal)(it -> first)).get_bit_sequence() << endl;
-        
+        for (map<meal, string, classcomp> :: iterator it = insms.begin(); it != insms.end(); ++it){
+            cout << it -> second << ": " ;
+            ((meal)(it -> first)).print();
+        }
         cout << endl;
     }
     int size()
     {
         return inssm.size();
-    }
-    int add_ingredient(ingredients_list insList, meals_list &mealsList)
-    {
-        vector<meal> meals;
-        for (map<string, meal> :: iterator it = inssm.begin(); it != inssm.end(); ++it)
-        {
-            meals.push_back((meal) (it->second));
-        }
-        for (int i = meals.size() - 1; i > -1; --i)
-        {
-            meal m = copy(meals[i]);
-            m = m + insList;
-            string name = mealsList.getName(m);
-            if (name == "NOT_EXISTS")
-            {
-            }
-            else{
-                cerr << "/!\\ " << clock() << ": adding meal " << m.get_bit_sequence() << endl;
-                this -> add_meal(m, name);
-            }
-        }
     }
 };

@@ -5,11 +5,9 @@
 #include "meals_list.cpp"
 
 
-int init_data()
+int init_data(ingredients_list &insList, meals_list &mealsList, meal &input)
 {
     //read the lists of ingredient
-    ingredients_list insList;
-    insList.init();
     ifstream ifs1("data/ingredients_list.txt");
     int n;
     ifs1 >> n;
@@ -22,8 +20,6 @@ int init_data()
     //cout << "insList.size() = " << insList.size() << endl;
     insList.print();
     //read the list of meals
-    meals_list mealsList;
-    mealsList.init();
     ifstream ifs2("data/meals_list.txt");
     ifstream ifs3("data/method.txt");
     ifs2 >> n;
@@ -39,20 +35,25 @@ int init_data()
             ifs3 >> in;
             tmp.add_ingredient(in, insList.getIndex(in));
         }
-        mealsList.add_meal(make_meal(tmp, insList.size()), name);
+        mealsList.add_meal(make_meal(tmp), name);
     }
     mealsList.print();
     ifs1.close();
     ifs2.close();
     ifs3.close();
     
-    
-    meals_list tmpMealsList; tmpMealsList.init();
-    tmpMealsList.add_meal(make_meal(make_ingredient("thit", 0), 6), "thit");
-    tmpMealsList.add_ingredient(make_ingredient("rau", 2),mealsList);
-    tmpMealsList.print();
-    tmpMealsList.add_ingredient(make_ingredient("muoi", 4), mealsList);
-    tmpMealsList.add_ingredient(make_ingredient("dau_an", 5), mealsList);
-    tmpMealsList.print();
-    
+    //read the input
+    ifstream ifs4("data/input.txt");
+    ifs4 >> n;
+    for (int i = 0; i < n; ++i)
+    {
+        string tmp;
+        ifs4 >> tmp;
+        input.add_ingredient(make_ingredient(tmp, insList.getIndex(tmp)));
+    }
+    ifs4.close();
+    input.print();
+    cout << "/!\\ Init ok " << endl;
 }
+
+//init is good 2017-09-08 08:50 GMT + 7

@@ -1,6 +1,6 @@
 3 ca mam dau_an
 3 thit dau_an muoi
 4 rau thit muoi dau_an
-2 thit muoi
+2 thit dau_an
 2 rau muoi
-2 ca muoi
+2 ca dau_an
